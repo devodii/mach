@@ -1,0 +1,41 @@
+services:
+  # Next.js landing page — http://localhost:3000
+  web:
+    # Node 22+: pnpm 11 depends on builtins (node:sqlite) absent from Node 20.
+    image: node:22-bookworm-slim
+    working_dir: /app
+    command: >
+      sh -c "corepack enable &&
+             pnpm install --config.confirmModulesPurge=false &&
+             pnpm dev"
+    environment:
+      NEXT_TELEMETRY_DISABLED: "1"
+      # Bind-mounted source on macOS does not emit inotify events reliably.
+      WATCHPACK_POLLING: "true"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./web:/app
+      # Keep container node_modules separate from the host's (different platform
+      # binaries for sharp/swc).
+      - web_node_modules:/app/node_modules
+      # pnpm puts its store on the same filesystem as node_modules, which for a
+      # bind mount means writing ~370MB into web/ on the host. Shadowing the
+      # path with a volume keeps the source tree clean.
+      - web_pnpm_store:/app/.pnpm-store
+
+  # Gitbook preview — http://localhost:4000
+  docs:
+    build:
+      context: ./docs
+    ports:
+      - "4000:4000"
+      - "35729:35729"
+    volumes:
+      - ./docs:/docs
+      - docs_book_output:/docs/_book
+
+volumes:
+  web_node_modules:
+  web_pnpm_store:
+  docs_book_output:

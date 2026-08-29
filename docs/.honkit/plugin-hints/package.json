@@ -1,0 +1,8 @@
+{
+  "name": "honkit-plugin-machhints",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Renders GitBook {% hint %} callouts in the local honkit preview.",
+  "main": "index.js",
+  "engines": { "honkit": "*", "gitbook": "*" }
+}

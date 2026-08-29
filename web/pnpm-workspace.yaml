@@ -1,0 +1,6 @@
+allowBuilds:
+  unrs-resolver: true
+# pnpm 11 reads settings from here rather than package.json.
+# unrs-resolver ships a prebuilt native binary used by eslint-config-next.
+onlyBuiltDependencies:
+  - unrs-resolver

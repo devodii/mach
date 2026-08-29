@@ -1,0 +1,8 @@
+# Consumed by GitBook.com when it syncs this repository.
+# The same SUMMARY.md drives the local honkit preview, so the navigation you
+# see at localhost:4000 is the navigation GitBook publishes.
+root: ./
+
+structure:
+  readme: README.md
+  summary: SUMMARY.md

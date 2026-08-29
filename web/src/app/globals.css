@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* The only three literal colors in the system. */
+    --black: 0 0 0;
+    --white: 255 255 255;
+    --tech: 17 17 17;
+
+    /* Hairline rules. See the note in tailwind.config.ts. */
+    --hairline: 255 255 255;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ink text-paper font-sans antialiased;
+    font-feature-settings: "ss01" 1, "cv01" 1, "tnum" 1;
+  }
+
+  ::selection {
+    @apply bg-paper text-ink;
+  }
+
+  /* Institutional focus ring: square, high contrast, never a soft glow. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-paper ring-offset-2 ring-offset-ink;
+  }
+}
+
+@layer components {
+  /*
+   * The structural grid. Every section sits inside this shell so the vertical
+   * hairlines line up from the nav all the way down to the footer.
+   */
+  .shell {
+    @apply mx-auto w-full max-w-shell px-6 md:px-10;
+  }
+
+  .rule {
+    @apply border-t border-hairline/[0.14];
+  }
+
+  .label {
+    @apply font-mono text-[11px] uppercase tracking-[0.18em] text-paper/40;
+  }
+
+  /* Faint engineering graph paper, used behind the hero only. */
+  .grid-field {
+    background-image:
+      linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

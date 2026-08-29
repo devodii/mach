@@ -1,0 +1,22 @@
+/* Local preview styling only. GitBook.com uses its own theme. */
+
+.markdown-section blockquote {
+  border-left: 4px solid #111111;
+  background: #fafafa;
+  padding: 12px 16px;
+  color: #333;
+}
+
+.markdown-section table {
+  display: table;
+  width: 100%;
+}
+
+.markdown-section pre {
+  background: #0d0d0d;
+}
+
+.mermaid {
+  text-align: center;
+  margin: 24px 0;
+}

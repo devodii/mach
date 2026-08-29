@@ -1,0 +1,12 @@
+{
+  "title": "MACH Protocol",
+  "description": "The Fiat-to-Soroban Settlement Layer.",
+  "plugins": [
+    "machmermaid",
+    "machhints"
+  ],
+  "pluginsConfig": {},
+  "styles": {
+    "website": "styles/website.css"
+  }
+}

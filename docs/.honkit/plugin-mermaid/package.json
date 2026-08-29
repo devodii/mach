@@ -1,0 +1,8 @@
+{
+  "name": "honkit-plugin-machmermaid",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Renders ```mermaid fences in the local honkit preview using a current Mermaid.",
+  "main": "index.js",
+  "engines": { "honkit": "*", "gitbook": "*" }
+}

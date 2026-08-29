@@ -1,0 +1,19 @@
+.mermaid {
+  margin: 28px 0;
+  text-align: center;
+  overflow-x: auto;
+}
+
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.mermaid-error {
+  color: #b00020;
+  background: #fff5f5;
+  border: 1px solid #ffd0d0;
+  padding: 12px;
+  text-align: left;
+  white-space: pre-wrap;
+}

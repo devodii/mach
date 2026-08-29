@@ -1,0 +1,9 @@
+{
+  "name": "mach-docs-runtime",
+  "private": true,
+  "description": "Toolchain for the local Gitbook preview. Not published, not part of the docs.",
+  "dependencies": {
+    "honkit": "6.0.2",
+    "mermaid": "11.4.1"
+  }
+}
