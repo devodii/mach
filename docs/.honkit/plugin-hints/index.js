@@ -1,7 +1,7 @@
 /**
  * GitBook.com renders `{% hint style="..." %}` natively; honkit does not know
- * the tag and fails the page outright. Rather than strip hints from the source
- * — which would make the local preview diverge from what actually ships — we
+ * the tag and fails the page outright. Rather than strip hints from the source,
+ * which would make the local preview diverge from what actually ships, we
  * translate them into blockquotes.
  *
  * The source stays valid GitBook. Both renderers show a callout.

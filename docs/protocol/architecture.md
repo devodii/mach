@@ -13,7 +13,7 @@ Each Smart Invoice owns four things:
 | **Terms** | Principal, settlement asset, due date, liquidation time-lock. |
 | **Parties** | The business (a SEP-45 C-address), the lender (or vault), and the anchor authorised to attest payment. |
 | **Collateral** | Assets escrowed against the facility, released only by settlement or liquidation. |
-| **Instrument binding** | The SEP-59 `account_id` whose credits — and only whose credits — can settle this invoice. |
+| **Instrument binding** | The SEP-59 `account_id` whose credits, and only whose credits, can settle this invoice. |
 
 ### Lifecycle
 
@@ -29,7 +29,7 @@ stateDiagram-v2
 ```
 
 State transitions are one-way. There is no path from `Settled` back to `Funded`,
-and no administrative override — an incorrectly settled invoice is not reversible
+and no administrative override, so an incorrectly settled invoice is not reversible
 by the protocol, which is why verification happens before execution rather than
 after.
 
@@ -68,7 +68,7 @@ pub trait MACHSettlementTrait {
 ```
 
 {% hint style="info" %}
-`U256` and `Bytes` are `soroban_sdk` types, not Rust primitives — there is no
+`U256` and `Bytes` are `soroban_sdk` types, not Rust primitives. There is no
 `u256` in Rust. `Error` is a `#[contracterror]` enum with an explicit `#[repr(u32)]`
 discriminant, because Soroban serialises error codes as `u32` across the host
 boundary.
@@ -122,7 +122,7 @@ pub enum DataKey {
 ### The Proof-of-Payment envelope
 
 The `proof: Bytes` argument is the anchor's notification carried verbatim. The
-contract does not trust MACH's parsing of it — it re-derives everything.
+contract does not trust MACH's parsing of it; it re-derives everything.
 
 ```rust
 #[contracttype]
@@ -153,7 +153,7 @@ fn execute_settlement(e: Env, invoice_id: U256, proof: Bytes) -> Result<(), Erro
 
     let pop: ProofOfPayment = decode_proof(&e, &proof)?;
 
-    // 1. The signature must verify against the key pinned at provisioning —
+    // 1. The signature must verify against the key pinned at provisioning,
     //    not against a key supplied in the call, and not against whatever the
     //    anchor's TOML says today.
     e.crypto()
@@ -209,22 +209,15 @@ twice.
 Indexers reconstruct the full lifecycle of any facility from these four topics
 without reading contract storage.
 
-## SEP-45: identity that survives key rotation
+## Identity and key rotation
 
-A classic Stellar account *is* its keypair. Lose the key and you lose the account;
-rotate the key and you are, from the ledger's perspective, a different party.
-
-That is unworkable for a business with a multi-month facility outstanding.
-Employees leave, HSMs are replaced, signing policies change from one signer to a
-2-of-3 quorum as the facility grows. Under a classic-account model, every one of
-those events would require unwinding and reissuing the invoice — moving escrowed
-collateral, renegotiating terms, and re-provisioning the banking instrument.
-
-SEP-45 authenticates **contract accounts (C-addresses)**, where the signing policy
-lives inside the account contract rather than in the address itself.
+The invoice stores the business as a **SEP-45 contract account (C-address)**, not
+as a classic keypair. The rationale is covered in
+[The SEP Stack](sep-stack.md#sep-45-smart-contract-account-c-address-identity);
+what matters at the contract level is how authorisation is expressed:
 
 ```rust
-// The invoice stores the business's C-address — a contract, not a public key.
+// The invoice stores the business's C-address, a contract and not a public key.
 pub business: Address,
 
 // Authorisation asks the account contract whether this call is permitted.
@@ -233,52 +226,28 @@ pub business: Address,
 invoice.business.require_auth();
 ```
 
-The consequence:
+Because the address is a contract rather than a key, the business can rotate
+signing keys while the invoice remains locked in the MACH settlement logic. Key
+rotation is internal to the account contract and produces no state change in the
+invoice: the collateral never moves, the instrument binding never changes, and
+settlement remains callable throughout.
 
-{% hint style="success" %}
-**The business can rotate keys while the invoice remains locked in the MACH
-settlement logic.** The C-address is stable for the life of the facility. Key
-rotation is an internal operation of the account contract and produces no state
-change in the invoice at all — the collateral never moves, the instrument binding
-never changes, and settlement remains callable throughout.
-{% endhint %}
+## What is pinned, and when
 
-This also composes cleanly with the rest of the stack. The SEP-59 provisioning
-request in Step 1 identifies the account holder by C-address, so the anchor's KYC
-record is bound to a durable identity rather than to a key that will change.
+Every trusted input to `execute_settlement` is written on-chain **before** funds
+are at risk. Nothing supplied at call time can redirect a settlement.
 
-## SEP-56: the lender side
-
-Institutional capital does not fund invoices one at a time. SEP-56 tokenised
-vaults give lenders a standard deposit and redemption surface over a book of
-Smart Invoices.
-
-```mermaid
-flowchart LR
-    L["Institutional lender"] -->|deposit| V["SEP-56 Vault"]
-    V -->|allocates| I1["Smart Invoice A"]
-    V -->|allocates| I2["Smart Invoice B"]
-    V -->|allocates| I3["Smart Invoice C"]
-    I1 -->|settle_loan| V
-    I2 -->|settle_loan| V
-    I3 -->|liquidate| V
-    V -->|redeem| L
-```
-
-The vault holds the lender position; the invoices hold the collateral. Because
-settlement is atomic, a vault's accounting is exact at every ledger close — there
-is no in-flight state where an invoice has been paid but the vault has not yet
-recognised it.
-
-## Composition summary
-
-| Layer | Standard | Contract-visible artefact |
+| Field | Pinned at | Supplied by |
 | --- | --- | --- |
-| Identity | SEP-45 | `business: Address` (C-address) |
-| Banking instrument | SEP-59 | `instrument_id: String`, `anchor_signing_key: BytesN<32>` |
-| Cross-asset pricing | SEP-38 | Quote id referenced at settlement |
-| Lender capital | SEP-56 | `lender: Address` (vault contract) |
-| Anchor discovery | SEP-1 | `SIGNING_KEY` pinned at provisioning |
+| `business` | `initialize_invoice` | Origination |
+| `anchor_signing_key` | `bind_instrument` | SEP-1 lookup, operator-confirmed |
+| `instrument_id` | `bind_instrument` | SEP-59 provisioning response |
+| `settlement_asset`, `amount_due` | `initialize_invoice` | Origination |
+| `lender` | Funding | SEP-56 vault or direct lender |
+| `liquidation_ledger` | `initialize_invoice` | Terms |
 
-Every trusted input to `execute_settlement` is pinned on-chain **before** funds are
-at risk. Nothing supplied at call time can redirect a settlement.
+The `proof` argument to `execute_settlement` is the only untrusted input, and it
+is checked against all of the above before any state moves.
+
+For how these fields map back to the standards that produce them, see
+[The SEP Stack](sep-stack.md).

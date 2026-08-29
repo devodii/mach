@@ -2,8 +2,8 @@
  * Mermaid for the local honkit preview.
  *
  * The obvious choice, gitbook-plugin-mermaid-gb3, bundles a mermaid from the
- * v7 era. It silently renders an empty box for anything modern — `autonumber`,
- * `stateDiagram-v2`, `flowchart` — which is most of this specification. We
+ * v7 era. It silently renders an empty box for anything modern (`autonumber`,
+ * `stateDiagram-v2`, `flowchart`), which is most of this specification. We
  * vendor a current Mermaid instead (see the Dockerfile) and drive it ourselves.
  *
  * GitBook.com renders ```mermaid fences natively, so none of this affects what

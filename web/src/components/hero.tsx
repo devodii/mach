@@ -3,7 +3,6 @@ import { ArrowUpRight } from "lucide-react";
 import { ContainerVisual } from "@/components/container-visual";
 import { Reveal } from "@/components/reveal";
 import { Button } from "@/components/ui/button";
-import { SITE, SPEC_URL } from "@/lib/site";
 
 interface HeroProps {
   photograph?: string | null;
@@ -21,20 +20,21 @@ export function Hero({ photograph }: HeroProps) {
 
         <Reveal mode="mount" delay={0.06}>
           <h1 className="mt-7 max-w-5xl text-balance text-[40px] font-bold leading-[1.03] tracking-tightest sm:text-6xl lg:text-[76px]">
-            {SITE.tagline}
+            The Fiat-to-Soroban Settlement Layer.
           </h1>
         </Reveal>
 
         <Reveal mode="mount" delay={0.12}>
           <p className="mt-8 max-w-2xl text-pretty text-base leading-relaxed text-paper/55 sm:text-lg">
-            {SITE.description}
+            Bridging the visibility gap between global banking rails and smart
+            contract execution using SEP-59 Proof-of-Payment Oracles.
           </p>
         </Reveal>
 
         <Reveal mode="mount" delay={0.18}>
           <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
             <Button size="lg" asChild>
-              <a href={SPEC_URL} target="_blank" rel="noreferrer">
+              <a href={process.env.NEXT_PUBLIC_DOCS_URL} target="_blank" rel="noreferrer">
                 Review the Protocol Specification
                 <ArrowUpRight className="size-4" />
               </a>
@@ -46,7 +46,7 @@ export function Hero({ photograph }: HeroProps) {
         </Reveal>
       </div>
 
-      {/* Visual sits flush to the section edges — the frame is the page itself. */}
+      {/* Visual sits flush to the section edges, so the frame is the page itself. */}
       <Reveal mode="mount" delay={0.24} className="relative mt-16 md:mt-20">
         <div className="border-t border-hairline/[0.14]">
           <ContainerVisual photograph={photograph} />

@@ -43,10 +43,10 @@ sequenceDiagram
 
 ---
 
-## Step 1 — Provisioning
+## Step 1: Provisioning
 
 MACH uses the anchor's `EXTERNAL_ACCOUNT_SERVER` (SEP-59) to request a unique
-receiving instrument — a virtual IBAN, or the equivalent on a local rail — bound
+receiving instrument (a virtual IBAN, or the equivalent on a local rail) bound
 to one specific Smart Invoice.
 
 ```http
@@ -89,9 +89,9 @@ obligation. The mapping is structural rather than inferred.
 {% endhint %}
 
 The business identity supplied here is a **SEP-45 contract account (C-address)**,
-not a classic keypair — see [Protocol Architecture](architecture.md).
+not a classic keypair. See [Protocol Architecture](architecture.md).
 
-## Step 2 — Monitoring
+## Step 2: Monitoring
 
 MACH listens for the anchor's `on_change_callback`. When the buyer's wire posts,
 the anchor pushes a notification:
@@ -122,7 +122,7 @@ At this point the payload is **untrusted input from an unauthenticated HTTP
 request**. Nothing in it may influence state until Step 3 completes.
 {% endhint %}
 
-## Step 3 — Verification
+## Step 3: Verification
 
 This is the load-bearing step, and the reason MACH is an oracle rather than a
 webhook consumer.
@@ -147,7 +147,7 @@ The verification routine, in order:
 async function verifyNotification(req: Request): Promise<Proof> {
   // 1. Resolve the signing key for the domain that claims to have sent this.
   //    The domain is taken from our own anchor registry, never from the
-  //    request — a forged X-Stellar-Domain must not select its own key.
+  //    request, because a forged X-Stellar-Domain must not select its own key.
   const anchor = registry.mustResolve(req.headers["x-stellar-domain"]);
   const signingKey = await sep1.signingKey(anchor.tomlUrl);
   assert(signingKey === anchor.pinnedSigningKey, "SIGNING_KEY rotated unexpectedly");
@@ -159,7 +159,7 @@ async function verifyNotification(req: Request): Promise<Proof> {
   const payload = `${t}.${req.rawBody}`;
   assert(ed25519.verify(s, payload, signingKey), "bad signature");
 
-  // 3. Reject stale signatures — bounds the replay window.
+  // 3. Reject stale signatures, bounding the replay window.
   assert(Math.abs(now() - t) < 300, "timestamp outside tolerance");
 
   // 4. Bind the payload to the invoice it claims to settle.
@@ -197,7 +197,7 @@ Note that this step is **stateless and reproducible**. Anyone holding the raw bo
 the signature, and the anchor's published key can perform the identical check. The
 middleware is not a trusted party; it is a convenience.
 
-## Step 4 — Execution
+## Step 4: Execution
 
 Once verified, MACH constructs a signed authorization entry and invokes
 `execute_settlement` on the Soroban contract.
@@ -254,7 +254,7 @@ one.
 | Signature verification | < 5ms |
 | Invoice read + assertions | ~100ms |
 | Soroban submission → ledger close | ~5s |
-| **Total** | **≈ 5–6s** |
+| **Total** | **~5 to 6s** |
 
 Against a 72-hour manual baseline, this is the T+0 Settlement Finality claim in
 concrete terms.

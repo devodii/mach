@@ -2,25 +2,27 @@ import type { Metadata } from "next";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 
-import { SITE } from "@/lib/site";
 import "./globals.css";
+
+const DESCRIPTION =
+  "Bridging the visibility gap between global banking rails and smart contract execution using SEP-59 Proof-of-Payment Oracles.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://mach.finance"),
   title: {
-    default: `${SITE.name} — ${SITE.tagline}`,
-    template: `%s — ${SITE.name}`,
+    default: "MACH Protocol: The Fiat-to-Soroban Settlement Layer.",
+    template: "%s | MACH Protocol",
   },
-  description: SITE.description,
+  description: DESCRIPTION,
   openGraph: {
-    title: `${SITE.name} — ${SITE.tagline}`,
-    description: SITE.description,
+    title: "MACH Protocol: The Fiat-to-Soroban Settlement Layer.",
+    description: DESCRIPTION,
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE.name} — ${SITE.tagline}`,
-    description: SITE.description,
+    title: "MACH Protocol: The Fiat-to-Soroban Settlement Layer.",
+    description: DESCRIPTION,
   },
 };
 

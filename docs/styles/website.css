@@ -1,22 +1,153 @@
-/* Local preview styling only. GitBook.com uses its own theme. */
+/*
+ * Local honkit preview only. GitBook.com applies its own theme, so nothing here
+ * affects what publishes; it exists so the preview is readable while drafting.
+ */
 
-.markdown-section blockquote {
-  border-left: 4px solid #111111;
-  background: #fafafa;
-  padding: 12px 16px;
-  color: #333;
+/* ---------------------------------------------------------------- code ---- */
+
+/*
+ * honkit ships highlight.js with a dark theme that leaves plain identifiers,
+ * punctuation and properties at very low contrast against the near-black
+ * background. These overrides raise every token to a legible level and give the
+ * unhighlighted base text a near-white default.
+ */
+.markdown-section pre {
+  background: #0d1117;
+  color: #e6edf3;
+  border: 1px solid #21262d;
+  border-radius: 3px;
+  padding: 16px 18px;
+  line-height: 1.55;
+  font-size: 13.5px;
+  overflow-x: auto;
 }
+
+/*
+ * The inline-code rule below would otherwise apply inside <pre> as well. Because
+ * the <code> there is an inline box spanning many wrapped lines, its border
+ * paints a stray rule under every line of the block.
+ */
+.markdown-section pre > code,
+.markdown-section pre code {
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+}
+
+.markdown-section pre .hljs-comment,
+.markdown-section pre .hljs-quote {
+  color: #8b949e;
+  font-style: italic;
+}
+
+.markdown-section pre .hljs-keyword,
+.markdown-section pre .hljs-selector-tag,
+.markdown-section pre .hljs-literal {
+  color: #ff7b72;
+}
+
+.markdown-section pre .hljs-string,
+.markdown-section pre .hljs-regexp {
+  color: #a5d6ff;
+}
+
+.markdown-section pre .hljs-number,
+.markdown-section pre .hljs-variable.constant_ {
+  color: #ffa657;
+}
+
+.markdown-section pre .hljs-title.function_,
+.markdown-section pre .hljs-title {
+  color: #d2a8ff;
+}
+
+.markdown-section pre .hljs-title.class_,
+.markdown-section pre .hljs-type,
+.markdown-section pre .hljs-built_in {
+  color: #7ee787;
+}
+
+.markdown-section pre .hljs-attr,
+.markdown-section pre .hljs-attribute,
+.markdown-section pre .hljs-property,
+.markdown-section pre .hljs-meta,
+.markdown-section pre .hljs-section {
+  color: #79c0ff;
+}
+
+.markdown-section pre .hljs-params,
+.markdown-section pre .hljs-subst,
+.markdown-section pre .hljs-punctuation,
+.markdown-section pre .hljs-operator {
+  color: #e6edf3;
+}
+
+/* Inline code, kept light so it reads inside body copy. */
+.markdown-section code {
+  background: #f2f4f6;
+  color: #1a1a1a;
+  border: 1px solid #e3e6e9;
+  border-radius: 2px;
+  padding: 1px 5px;
+  font-size: 0.92em;
+}
+
+/* -------------------------------------------------------------- callout ---- */
+
+/* {% hint %} blocks arrive as blockquotes; see .honkit/plugin-hints. */
+.markdown-section blockquote {
+  border-left: 3px solid #1a1a1a;
+  background: #f7f8f9;
+  padding: 14px 18px;
+  margin: 22px 0;
+  color: #2b2b2b;
+}
+
+.markdown-section blockquote > p:first-child {
+  margin-top: 0;
+  font-size: 0.82em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6a6a6a;
+}
+
+.markdown-section blockquote > p:last-child {
+  margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------- tables ---- */
 
 .markdown-section table {
   display: table;
   width: 100%;
 }
 
-.markdown-section pre {
-  background: #0d0d0d;
+.markdown-section table th {
+  background: #f7f8f9;
+  text-align: left;
 }
 
+/* ------------------------------------------------------------- diagrams ---- */
+
 .mermaid {
+  margin: 28px 0;
   text-align: center;
-  margin: 24px 0;
+  overflow-x: auto;
+}
+
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.mermaid-error {
+  color: #b00020;
+  background: #fff5f5;
+  border: 1px solid #ffd0d0;
+  padding: 12px;
+  text-align: left;
+  white-space: pre-wrap;
 }

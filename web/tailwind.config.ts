@@ -1,12 +1,12 @@
 import type { Config } from "tailwindcss";
 
 /**
- * MACH Protocol — Institutional Brutalism.
+ * MACH Protocol, Institutional Brutalism.
  *
  * The palette is deliberately three literal values: #000000, #FFFFFF and a
  * single technical gray #111111. `hairline` is white at low alpha rather than a
  * fourth hex, so it composites to ~#1a1a1a over black and ~#252525 over the
- * gray surface — one rule that stays visible on both grounds while remaining
+ * gray surface, giving one rule that stays visible on both grounds while remaining
  * strictly grayscale. Change `--hairline` in globals.css to go fully solid.
  */
 const config: Config = {

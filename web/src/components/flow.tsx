@@ -38,7 +38,7 @@ export function Flow() {
     <section id="flow" className="border-b border-hairline/[0.14] bg-tech">
       <div className="shell py-24 md:py-32">
         <Reveal>
-          <p className="label">03 — The Oracle Workflow</p>
+          <p className="label">02 / The Oracle Workflow</p>
           <h2 className="mt-6 max-w-3xl text-4xl font-bold leading-[1.06] tracking-tightest sm:text-5xl">
             Most oracles feed price data. MACH feeds payment data.
           </h2>

@@ -2,11 +2,11 @@
 
 MACH is a **middleware settlement engine** for the Stellar network.
 
-It sits between two systems that cannot see each other: the global banking rails
-where trade payments actually move, and Soroban, where the obligations those
-payments discharge are represented as contracts. MACH's only job is to carry a
-verified fact across that boundary — *this invoice has been paid* — and to do it
-with cryptographic provenance rather than a human attestation.
+It sits between two systems that cannot see each other: the banking rails where
+trade payments actually move, and Soroban, where the obligations those payments
+discharge are represented as contracts. MACH's only job is to carry a verified
+fact across that boundary, namely that a specific invoice has been paid, and to
+do it with cryptographic provenance rather than a human attestation.
 
 ## What MACH is
 
@@ -18,8 +18,8 @@ MACH is infrastructure, not an application. Concretely, it is three things:
 | **Verification middleware** | Receives anchor payment notifications, resolves the anchor's signing key from its `stellar.toml`, and validates the signature before any payload is treated as true. |
 | **Authorization relay** | Converts a verified payment notification into a signed Soroban authorization entry that invokes settlement on the invoice contract. |
 
-Everything else — origination, underwriting, pricing, KYC, custody of fiat, custody
-of collateral — belongs to somebody else. MACH is deliberately small.
+Everything else (origination, underwriting, pricing, KYC, custody of fiat,
+custody of collateral) belongs to somebody else. MACH is deliberately small.
 
 ## What MACH is not
 
@@ -36,8 +36,8 @@ no treasury, no pooled balance, and no ability to move a user's money.
 * **MACH holds only the authority to relay a proof it has independently verified.**
 
 The distinction matters legally and technically. A protocol that custodies funds
-inherits the regulatory perimeter of a money transmitter and the blast radius of a
-hot wallet. MACH governs *the logic of settlement* between bank accounts and
+inherits the regulatory perimeter of a money transmitter and the blast radius of
+a hot wallet. MACH governs the logic of settlement between bank accounts and
 Soroban; it does not stand in the payment path.
 
 ## Why middleware is the right shape
@@ -49,36 +49,33 @@ the ledger. There are only three ways to make that happen:
    per settlement. It also reintroduces exactly the discretionary trust that
    moving on-chain was supposed to remove.
 2. **The contract queries the bank.** Contracts cannot make outbound calls, and
-   banks do not expose ledgers to anonymous callers. This is not available.
-3. **A verifiable relay carries a signed attestation from a party the bank already
-   trusts.** This is MACH.
+   banks do not expose ledgers to anonymous callers. This option is not available.
+3. **A verifiable relay carries a signed attestation from a party the bank
+   already trusts.** This is MACH.
 
-Option three works because the regulated anchor is *already* the entity that sees
-the fiat credit and is *already* required to be identifiable on-chain via SEP-1.
+Option three works because the regulated anchor is already the entity that sees
+the fiat credit, and is already required to be identifiable on-chain via SEP-1.
 MACH does not ask anyone to trust it. It asks them to trust the anchor's
 signature, and it makes that signature checkable by anyone.
 
 ## Trust boundaries
 
-```
-┌───────────────┐   fiat    ┌──────────────┐  signed   ┌──────────────┐  authz   ┌──────────────┐
-│ Buyer's bank  │ ────────► │ Anchor       │ ────────► │ MACH         │ ───────► │ Soroban      │
-│               │           │ (custodian,  │  webhook  │ (verifier,   │  entry   │ (settlement, │
-│               │           │  regulated)  │           │  no custody) │          │  collateral) │
-└───────────────┘           └──────────────┘           └──────────────┘          └──────────────┘
-                                    ▲                          │
-                                    └──────────────────────────┘
-                                      SEP-1 SIGNING_KEY lookup
+```mermaid
+flowchart LR
+    B["Buyer's bank"] -->|fiat| A["Anchor<br/>regulated custodian"]
+    A -->|signed webhook| M["MACH<br/>verifier, no custody"]
+    M -->|authorization entry| S["Soroban<br/>settlement, collateral"]
+    A -.->|SEP-1 SIGNING_KEY lookup| M
 ```
 
 The only trusted assertion in the system is the anchor's signature over a payment
-notification. If that signature does not verify, MACH does nothing — no
-settlement, no partial state, no retry against an unverified payload.
+notification. If that signature does not verify, MACH does nothing: no
+settlement, no partial state, and no retry against an unverified payload.
 
 ## The standards MACH composes
 
-MACH is not a new interface for banks or lenders. It composes existing Stellar
-Ecosystem Proposals into one executable path:
+MACH does not invent a new interface for banks or lenders. It composes existing
+Stellar Ecosystem Proposals into one executable path:
 
 | Standard | Status | Role in MACH |
 | --- | --- | --- |
@@ -90,14 +87,20 @@ Ecosystem Proposals into one executable path:
 
 {% hint style="info" %}
 Two of these standards are still moving. We label them as proposed rather than
-final on purpose — MACH is built against them and contributes to them, but a
+final on purpose. MACH is built against them and contributes to them, but a
 specification that overstates the maturity of its dependencies is not one an
 engineer should trust.
 {% endhint %}
 
+[**The SEP Stack**](protocol/sep-stack.md) documents each one: what MACH calls,
+what it assumes, and what breaks without it.
+
 ## Where to go next
 
-* [**The Trade Finance Gap**](problem/trade-finance-gap.md) — the market MACH exists to serve.
-* [**The Role of the Oracle**](problem/role-of-the-oracle.md) — why payment data, not price data.
-* [**The SEP-59 Oracle Workflow**](protocol/sep-59-oracle-workflow.md) — the verification path, step by step.
-* [**Protocol Architecture**](protocol/architecture.md) — the Soroban contract interface.
+| If you want to | Read |
+| --- | --- |
+| Understand the problem MACH solves | [The Visibility Gap](concepts/visibility-gap.md) |
+| Understand why it is an oracle | [The Role of the Oracle](concepts/role-of-the-oracle.md) |
+| See which standards are involved | [The SEP Stack](protocol/sep-stack.md) |
+| Trace a payment end to end | [The SEP-59 Oracle Workflow](protocol/sep-59-oracle-workflow.md) |
+| Integrate with the contracts | [Protocol Architecture](protocol/architecture.md) |

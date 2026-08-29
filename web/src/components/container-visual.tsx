@@ -45,7 +45,7 @@ export function ContainerVisual({ photograph, className }: ContainerVisualProps)
           aria-label="A steel shipping container beneath a descending Stellar settlement beam, rendered as a technical elevation."
         >
           <defs>
-            {/* Every fill below is a pure gray ramp — no hue anywhere. */}
+            {/* Every fill below is a pure gray ramp, with no hue anywhere. */}
             <linearGradient id="mach-body" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#3a3a3a" />
               <stop offset="42%" stopColor="#222222" />

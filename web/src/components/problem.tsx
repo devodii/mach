@@ -12,7 +12,7 @@ export function Problem() {
       <div className="shell grid gap-14 py-24 md:grid-cols-12 md:py-32">
         <div className="md:col-span-5">
           <Reveal>
-            <p className="label">01 — The Problem</p>
+            <p className="label">01 / The Problem</p>
             <h2 className="mt-6 text-4xl font-bold leading-[1.06] tracking-tightest sm:text-5xl">
               The Visibility Gap.
             </h2>
@@ -28,7 +28,7 @@ export function Problem() {
             <p className="mt-8 max-w-xl leading-relaxed text-paper/45">
               A smart contract cannot see a bank account. When a buyer wires funds
               against a tokenised invoice, the ledger has no way to know it
-              happened — so a person reads a statement, confirms the credit, and
+              happened, so a person reads a statement, confirms the credit, and
               triggers settlement by hand. That person is the bottleneck, and the
               window they occupy is where counterparty risk lives.
             </p>

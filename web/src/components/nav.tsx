@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { SPEC_URL } from "@/lib/site";
 
 export function Nav() {
   return (
@@ -17,13 +16,10 @@ export function Nav() {
             <Link href="#problem">Problem</Link>
           </Button>
           <Button variant="ghost" size="sm" asChild className="hidden sm:inline-flex">
-            <Link href="#stack">Stack</Link>
-          </Button>
-          <Button variant="ghost" size="sm" asChild className="hidden md:inline-flex">
             <Link href="#flow">Settlement</Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
-            <a href={SPEC_URL} target="_blank" rel="noreferrer">
+            <a href={process.env.NEXT_PUBLIC_DOCS_URL} target="_blank" rel="noreferrer">
               Specification
             </a>
           </Button>

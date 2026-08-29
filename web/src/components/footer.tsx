@@ -1,4 +1,3 @@
-import { SITE, SPEC_URL } from "@/lib/site";
 
 export function Footer() {
   return (
@@ -14,15 +13,15 @@ export function Footer() {
 
         <div className="flex flex-col items-start gap-3 sm:items-end">
           <a
-            href={SPEC_URL}
+            href={process.env.NEXT_PUBLIC_DOCS_URL}
             target="_blank"
             rel="noreferrer"
             className="text-sm text-paper/60 underline decoration-hairline/30 underline-offset-4 transition-colors hover:text-paper hover:decoration-paper"
           >
-            docs.mach.finance
+            {process.env.NEXT_PUBLIC_DOCS_URL?.replace(/^https?:\/\//, "")}
           </a>
           <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-paper/25">
-            &copy; {new Date().getFullYear()} {SITE.name}
+            &copy; {new Date().getFullYear()} MACH Protocol
           </p>
         </div>
       </div>

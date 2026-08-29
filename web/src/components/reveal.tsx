@@ -6,7 +6,7 @@ import { motion, useReducedMotion } from "framer-motion";
 interface RevealProps {
   children: React.ReactNode;
   className?: string;
-  /** Stagger offset in seconds. Keep these small — this is not a showreel. */
+  /** Stagger offset in seconds. Keep these small, because this is not a showreel. */
   delay?: number;
   /**
    * `mount` plays immediately on hydration; `inView` waits for the element to
@@ -14,7 +14,7 @@ interface RevealProps {
    *
    * Above-the-fold content must use `mount`. An IntersectionObserver-driven
    * reveal leaves the hero at opacity 0 until observation fires, which means a
-   * slow hydration renders a blank first screen — the one screen that has to
+   * slow hydration renders a blank first screen, the one screen that has to
    * work.
    */
   mode?: "mount" | "inView";
@@ -23,7 +23,7 @@ interface RevealProps {
 /**
  * Institutional restraint: a short rise and a fade, nothing else. No spring,
  * no scale, no blur. Motion here exists to sequence reading order, not to
- * decorate — and it disappears entirely under prefers-reduced-motion.
+ * decorate, and it disappears entirely under prefers-reduced-motion.
  */
 export function Reveal({
   children,

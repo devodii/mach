@@ -7,12 +7,11 @@ import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
 import { Nav } from "@/components/nav";
 import { Problem } from "@/components/problem";
-import { SepGrid } from "@/components/sep-grid";
 
 /**
  * The hero renders a procedural steel-container elevation by default. Drop a
  * grayscale photograph at web/public/hero.{jpg,png,webp} and it is picked up
- * automatically at build time — no code change required.
+ * automatically at build time, with no code change required.
  */
 function findHeroPhotograph(): string | null {
   const publicDir = path.join(process.cwd(), "public");
@@ -31,7 +30,6 @@ export default function Page() {
       <main>
         <Hero photograph={photograph} />
         <Problem />
-        <SepGrid />
         <Flow />
         <Cta />
       </main>
