@@ -8,7 +8,6 @@ const DESCRIPTION =
   "Bridging the visibility gap between global banking rails and smart contract execution using SEP-59 Proof-of-Payment Oracles.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://mach.finance"),
   title: {
     default: "MACH Protocol: The Fiat-to-Soroban Settlement Layer.",
     template: "%s | MACH Protocol",

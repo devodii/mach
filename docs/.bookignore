@@ -1,0 +1,8 @@
+# Build tooling, not documentation content. honkit copies anything it does not
+# recognise into the published output, which would otherwise ship the plugin
+# sources and the Dockerfile to the live docs site.
+.honkit/
+Dockerfile
+runtime.package.json
+.gitbook.yaml
+.bookignore

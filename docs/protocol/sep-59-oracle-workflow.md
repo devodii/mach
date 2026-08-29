@@ -58,7 +58,7 @@ Content-Type: application/json
 {
   "asset": "iso4217:USD",
   "reference": "mach:invoice:0x8f3a…c41d",
-  "callback_url": "https://oracle.mach.finance/v1/sep59/callback",
+  "callback_url": "https://oracle.mach.example.com/v1/sep59/callback",
   "account_holder": {
     "type": "business",
     "identity": "CBQHNAX…7YKZ"
@@ -98,7 +98,7 @@ the anchor pushes a notification:
 
 ```http
 POST /v1/sep59/callback HTTP/1.1
-Host: oracle.mach.finance
+Host: oracle.mach.example.com
 Content-Type: application/json
 X-Stellar-Signature: t=1735689600, s=MEUCIQ…base64…
 X-Stellar-Domain: anchor.example.com

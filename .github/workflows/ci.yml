@@ -1,0 +1,156 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Where the docs are published. This is the GitHub Pages URL for this repo.
+env:
+  PRODUCTION_DOCS_URL: https://devodii.github.io/mach/
+
+# A newer push to main should cancel an in-flight run, but never a deploy that
+# has already started publishing.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  web:
+    name: Web build checks
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # pnpm version comes from the packageManager field in web/package.json.
+      - run: corepack enable
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      # Built against the production docs URL, not the localhost default in
+      # web/.env, so CI exercises what Vercel will actually ship.
+      - name: Build
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_DOCS_URL: ${{ env.PRODUCTION_DOCS_URL }}
+
+  docs:
+    name: Docs build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Reusing the same image the local preview runs means CI cannot drift from
+      # `docker compose up docs`. The honkit toolchain is defined once, in
+      # docs/Dockerfile.
+      - name: Build docs image
+        run: docker build -t mach-docs ./docs
+
+      - name: Build static site
+        run: |
+          docker run --rm -v "${{ github.workspace }}/docs:/docs" mach-docs \
+            honkit build /docs /docs/_book
+          sudo chown -R "$(id -u):$(id -g)" docs/_book
+
+      - name: Verify every page in SUMMARY.md was generated
+        run: |
+          set -euo pipefail
+          fail=0
+          # Read from a process substitution, not a pipe: a `while` on the right
+          # of a pipe runs in a subshell and its variable assignments are lost.
+          while read -r md; do
+            if [ "$md" = "README.md" ]; then
+              html="docs/_book/index.html"
+            else
+              html="docs/_book/${md%.md}.html"
+            fi
+            if [ -f "$html" ]; then
+              echo "  ok  $md -> $html"
+            else
+              echo "::error::SUMMARY.md lists $md but $html was not generated"
+              fail=1
+            fi
+          done < <(grep -oE '\]\([^)]+\.md\)' docs/SUMMARY.md | sed -E 's/^\]\(//; s/\)$//')
+          test "$fail" -eq 0
+
+      - name: Verify Mermaid fences were converted and the renderer shipped
+        run: |
+          set -euo pipefail
+
+          # An unconverted fence means the page hook never ran. Restrict this
+          # to generated HTML: the plugin's own source contains the literal
+          # string it searches for.
+          if grep -rq --include='*.html' 'class="lang-mermaid"' docs/_book; then
+            echo "::error::Unconverted mermaid fence; the machmermaid page hook did not run"
+            grep -rl --include='*.html' 'class="lang-mermaid"' docs/_book
+            exit 1
+          fi
+
+          # Compare against the source rather than a hardcoded number, so adding
+          # or removing a diagram does not need a workflow edit.
+          expected=$(grep -rh --include='*.md' --exclude-dir=_book -c '^```mermaid' docs \
+                     | awk '{s+=$1} END {print s+0}')
+          actual=$(grep -rho --include='*.html' 'class="mermaid"' docs/_book | wc -l | tr -d ' ')
+          echo "mermaid fences in source: $expected, rendered blocks: $actual"
+          if [ "$actual" -ne "$expected" ]; then
+            echo "::error::Expected $expected mermaid blocks, generated $actual"
+            exit 1
+          fi
+
+          # Regression guard. The vendored bundle assigns the global on its last
+          # line; wrapping or truncating it silently produces empty diagrams,
+          # which is exactly how this broke once before.
+          vendor=docs/_book/gitbook/honkit-plugin-machmermaid/mermaid.vendor.js
+          test -s "$vendor"
+          if ! tail -c 200 "$vendor" | grep -q 'globalThis.mermaid'; then
+            echo "::error::$vendor does not end with the globalThis.mermaid assignment"
+            exit 1
+          fi
+
+      - name: Check prose conventions
+        run: ./scripts/check-dashes.sh
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/_book
+
+  deploy-docs:
+    name: Deploy docs to Pages
+    # Only main publishes. Pull requests still run the build above.
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: [docs]
+    runs-on: ubuntu-latest
+
+    # No secrets. Pages deployment authenticates with the workflow's own OIDC
+    # token, which is what these two permissions grant.
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
