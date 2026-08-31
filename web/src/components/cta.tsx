@@ -27,7 +27,11 @@ export function Cta() {
               asChild
               className="bg-ink text-paper hover:bg-ink/85"
             >
-              <a href={process.env.NEXT_PUBLIC_DOCS_URL} target="_blank" rel="noreferrer">
+              <a
+                href={process.env.NEXT_PUBLIC_DOCS_URL}
+                target="_blank"
+                rel="noreferrer"
+              >
                 Review the Protocol Specification
                 <ArrowUpRight className="size-4" />
               </a>

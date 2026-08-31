@@ -4,11 +4,7 @@ import { ContainerVisual } from "@/components/container-visual";
 import { Reveal } from "@/components/reveal";
 import { Button } from "@/components/ui/button";
 
-interface HeroProps {
-  photograph?: string | null;
-}
-
-export function Hero({ photograph }: HeroProps) {
+export function Hero() {
   return (
     <section className="relative overflow-hidden border-b border-hairline/[0.14]">
       <div className="grid-field pointer-events-none absolute inset-0 opacity-70" />
@@ -34,7 +30,11 @@ export function Hero({ photograph }: HeroProps) {
         <Reveal mode="mount" delay={0.18}>
           <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
             <Button size="lg" asChild>
-              <a href={process.env.NEXT_PUBLIC_DOCS_URL} target="_blank" rel="noreferrer">
+              <a
+                href={process.env.NEXT_PUBLIC_DOCS_URL}
+                target="_blank"
+                rel="noreferrer"
+              >
                 Review the Protocol Specification
                 <ArrowUpRight className="size-4" />
               </a>
@@ -45,11 +45,9 @@ export function Hero({ photograph }: HeroProps) {
           </div>
         </Reveal>
       </div>
-
-      {/* Visual sits flush to the section edges, so the frame is the page itself. */}
       <Reveal mode="mount" delay={0.24} className="relative mt-16 md:mt-20">
         <div className="border-t border-hairline/[0.14]">
-          <ContainerVisual photograph={photograph} />
+          <ContainerVisual />
         </div>
       </Reveal>
     </section>

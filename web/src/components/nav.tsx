@@ -12,14 +12,28 @@ export function Nav() {
         </Link>
 
         <nav className="flex items-center gap-1 sm:gap-2">
-          <Button variant="ghost" size="sm" asChild className="hidden sm:inline-flex">
+          <Button
+            variant="ghost"
+            size="sm"
+            asChild
+            className="hidden sm:inline-flex"
+          >
             <Link href="#problem">Problem</Link>
           </Button>
-          <Button variant="ghost" size="sm" asChild className="hidden sm:inline-flex">
+          <Button
+            variant="ghost"
+            size="sm"
+            asChild
+            className="hidden sm:inline-flex"
+          >
             <Link href="#flow">Settlement</Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
-            <a href={process.env.NEXT_PUBLIC_DOCS_URL} target="_blank" rel="noreferrer">
+            <a
+              href={process.env.NEXT_PUBLIC_DOCS_URL}
+              target="_blank"
+              rel="noreferrer"
+            >
               Specification
             </a>
           </Button>

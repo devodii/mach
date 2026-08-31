@@ -1,4 +1,3 @@
-
 export function Footer() {
   return (
     <footer className="bg-ink">
@@ -6,8 +5,8 @@ export function Footer() {
         <div>
           <p className="text-[17px] font-bold tracking-tightest">MACH</p>
           <p className="mt-3 max-w-sm text-sm leading-relaxed text-paper/35">
-            A middleware settlement engine for the Stellar network. MACH does not
-            hold funds; it governs the logic of settlement.
+            A middleware settlement engine for the Stellar network. MACH does
+            not hold funds; it governs the logic of settlement.
           </p>
         </div>
 

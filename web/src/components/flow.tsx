@@ -58,11 +58,15 @@ export function Flow() {
                 <span className="font-mono text-[11px] tracking-[0.18em] text-paper/30">
                   {s.step}
                 </span>
-                <h3 className="mt-6 text-xl font-semibold tracking-tight">{s.actor}</h3>
+                <h3 className="mt-6 text-xl font-semibold tracking-tight">
+                  {s.actor}
+                </h3>
                 <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.14em] text-paper/35">
                   {s.system}
                 </p>
-                <p className="mt-5 text-sm leading-relaxed text-paper/45">{s.detail}</p>
+                <p className="mt-5 text-sm leading-relaxed text-paper/45">
+                  {s.detail}
+                </p>
               </li>
             ))}
           </ol>

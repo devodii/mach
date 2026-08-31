@@ -1,9 +1,21 @@
 import { Reveal } from "@/components/reveal";
 
 const LEDGER = [
-  { k: "Manual verification lag", v: "72 HOURS", note: "Bank confirmation to lender action" },
-  { k: "MACH settlement finality", v: "T+0", note: "Anchor notification to contract execution" },
-  { k: "Trust surface removed", v: "1 PARTY", note: "The human reconciling a bank statement" },
+  {
+    k: "Manual verification lag",
+    v: "72 HOURS",
+    note: "Bank confirmation to lender action",
+  },
+  {
+    k: "MACH settlement finality",
+    v: "T+0",
+    note: "Anchor notification to contract execution",
+  },
+  {
+    k: "Trust surface removed",
+    v: "1 PARTY",
+    note: "The human reconciling a bank statement",
+  },
 ];
 
 export function Problem() {
@@ -26,11 +38,11 @@ export function Problem() {
               verification lag. MACH eliminates this bottleneck.
             </p>
             <p className="mt-8 max-w-xl leading-relaxed text-paper/45">
-              A smart contract cannot see a bank account. When a buyer wires funds
-              against a tokenised invoice, the ledger has no way to know it
-              happened, so a person reads a statement, confirms the credit, and
-              triggers settlement by hand. That person is the bottleneck, and the
-              window they occupy is where counterparty risk lives.
+              A smart contract cannot see a bank account. When a buyer wires
+              funds against a tokenised invoice, the ledger has no way to know
+              it happened, so a person reads a statement, confirms the credit,
+              and triggers settlement by hand. That person is the bottleneck,
+              and the window they occupy is where counterparty risk lives.
             </p>
           </Reveal>
 

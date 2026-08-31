@@ -1,14 +1,5 @@
 import type { Config } from "tailwindcss";
 
-/**
- * MACH Protocol, Institutional Brutalism.
- *
- * The palette is deliberately three literal values: #000000, #FFFFFF and a
- * single technical gray #111111. `hairline` is white at low alpha rather than a
- * fourth hex, so it composites to ~#1a1a1a over black and ~#252525 over the
- * gray surface, giving one rule that stays visible on both grounds while remaining
- * strictly grayscale. Change `--hairline` in globals.css to go fully solid.
- */
 const config: Config = {
   darkMode: ["class"],
   content: ["./src/**/*.{ts,tsx}"],
@@ -40,8 +31,18 @@ const config: Config = {
         sm: "0px",
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
-        mono: ["var(--font-geist-mono)", "ui-monospace", "SFMono-Regular", "monospace"],
+        sans: [
+          "var(--font-geist-sans)",
+          "ui-sans-serif",
+          "system-ui",
+          "sans-serif",
+        ],
+        mono: [
+          "var(--font-geist-mono)",
+          "ui-monospace",
+          "SFMono-Regular",
+          "monospace",
+        ],
       },
       letterSpacing: {
         tightest: "-0.045em",
@@ -54,7 +55,7 @@ const config: Config = {
           "0%, 100%": { opacity: "0.45" },
           "50%": { opacity: "0.85" },
         },
-        "scan": {
+        scan: {
           "0%": { transform: "translateY(-100%)" },
           "100%": { transform: "translateY(100%)" },
         },
